@@ -131,3 +131,7 @@ http {
 ```
 
 nginx.conf는 volume 연결을 해두었고, 각 컨테이너별 로그 파일 사이즈와 개수를 제한해 두었다.
+
+# 관련 링크
+
+- [다단계빌드](https://github.com/kdw1521/TIL/blob/main/Docker/%EB%8B%A4%EB%8B%A8%EA%B3%84%EB%B9%8C%EB%93%9C.md)
