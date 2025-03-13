@@ -74,3 +74,12 @@ default 로 해두었다. 필요하다면 설정해주면 된다.
 ```
 
 json 자체를 넣어도 되고 정책생성기에서 GetObject로 추가해줘도 된다.
+
+## 4. 정적 프론트 파일 배포
+
+- S3 에 빌드된 파일을 업로드한다.
+- Cloudfront 설정에서 3-2 에서 등록한 서브 도메인으로 진입해 확인한다.
+
+# 같이 보면 좋을 링크
+
+- [Github-hosted Runner 로 프론트 정적파일 배포](https://github.com/kdw1521/TIL/blob/main/Github/Actions/Github-hosted-Runner_%EB%A1%9C_react_%EB%B0%B0%ED%8F%AC_CloudFront_S3.md)

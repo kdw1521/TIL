@@ -161,3 +161,7 @@ jobs:
 
 패키지 매니저로 pnpm을 사용했고, lock 파일 변경으로 캐시사용여부를 판단해 dependency들을 install 할지 여부를 판단하게 해두었다.  
 빌드 후 dist 디렉토리 내용을 S3에 올리고 Cloudfront 무효화를 진행한다.
+
+# 같이 보면 좋을 링크
+
+- [S3 + Cloudfront 로 정적프론트파일 배포](https://github.com/kdw1521/TIL/blob/main/AWS/S3_Cloudfront_%EC%B6%94%EA%B0%80%ED%95%B4_%EC%A0%95%EC%A0%81%ED%94%84%EB%A1%A0%ED%8A%B8%ED%8C%8C%EC%9D%BC_%EC%84%9C%EB%B9%99.md)
