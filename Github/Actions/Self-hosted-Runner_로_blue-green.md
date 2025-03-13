@@ -29,6 +29,7 @@
 - 배포 shell script
 - docker-compose.yml
 - Dockerfile
+- Slack webhook (optional)
 
 # 구현
 
@@ -111,7 +112,7 @@ jobs:
         if: failure()
         run: |
           Lcurl -X POST -H 'Content-type: application/json' --data '{
-            "text": "[My-Project] 🔴 백엔드 배포 완료!",
+            "text": "[My-Project] 🔴 백엔드 배포 실패!",
             "blocks": [
               {
                 "type": "section",
@@ -365,7 +366,7 @@ ubuntu     80900  0.0  3.5 274025988 138544 ?    Sl   Mar07   2:47 /home/ubuntu/
 하지만, 완전한 해결책은 아님. 하단 이슈를 트래킹 해야함.  
 [Self-hosted runner Issue - Waiting for a runner to pick up this job...](https://github.com/actions/runner/issues/3609)
 
-# 관련 링크
+# 같이 보면 좋을 링크
 
 - [다단계빌드](https://github.com/kdw1521/TIL/blob/main/Docker/%EB%8B%A4%EB%8B%A8%EA%B3%84%EB%B9%8C%EB%93%9C.md)
 - [Docker-compose 를 이용한 nginx,backend 처리](https://github.com/kdw1521/TIL/blob/main/Docker/Docker-compose_%EB%A5%BC_%EC%9D%B4%EC%9A%A9_nginx_upstream.md)
