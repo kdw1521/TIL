@@ -225,7 +225,19 @@ echo "[Nginx 설정 업데이트]"
 echo "Nginx 설정 파일 테스트 중..."
 if ! docker exec nginx nginx -t; then
     echo "Nginx 설정 파일 테스트 실패. 변경 내용을 확인하세요. nginx.conf를 기존으로 돌립니다."
-    sed -i "s/my-project-${NEXT_ENV}:1323/my-project-${CURRENT_ENV}:1323/" ./nginx.conf
+
+    # 기존 컨테이너로 설정 롤백
+    sed -i "s/carsayo-insurance-${NEXT_ENV}:1323/carsayo-insurance-${CURRENT_ENV}:1323/" ./nginx.conf
+
+    # 새 컨테이너 제거
+    sudo docker-compose -f docker-compose-prod.yml stop be-app-${NEXT_ENV}
+    sudo docker-compose -f docker-compose-prod.yml rm -f be-app-${NEXT_ENV}
+
+    # Slack 알림
+    curl -X POST -H 'Content-type: application/json' --data '{
+        "text": "⚠️ [배포 실패] Nginx 테스트 실패! 기존 서비스 유지"
+    }' my-slack-url
+
     exit 1
 fi
 
