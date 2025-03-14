@@ -139,6 +139,8 @@ jobs:
 ### 3. blue-green-deploy.sh, nginx-reload.sh 작성
 
 ```bash
+# blue-green-deploy.sh
+
 #!/bin/bash
 
 # 1. 현재 활성화된 환경 확인 (파일에서 읽기) - _env/active-env.txt 는 개발자가 추가
@@ -194,7 +196,11 @@ fi
 echo "[Nginx 스위칭]: $next_env environment..."
 sed -i "s/my-project-$current_env:1323/my-project-$next_env:1323/" ./nginx.conf # upstream 전환
 
-# 5-1. Nginx 설정 반영 스크립트 호출
+# 5-1. Nginx 설정 테스트 실패시 nginx.conf 기존으로 되돌리기위해 환경 export
+export CURRENT_ENV=$current_env
+export NEXT_ENV=$next_env
+
+# 5-2. Nginx 설정 반영 스크립트 호출
 ./nginx-reload.sh
 
 # 6. 기존 환경(Blue 또는 Green) 컨테이너 종료 - 기존요청이 있을수 있어 3초 대기
@@ -209,6 +215,8 @@ echo "[Blue/Green 배포완료] [현재 환경]: $next_env (Port: $next_port)"
 ```
 
 ```bash
+# nginx-reload.sh
+
 #!/bin/bash
 
 echo "[Nginx 설정 업데이트]"
@@ -216,7 +224,8 @@ echo "[Nginx 설정 업데이트]"
 # 1. Nginx 설정 테스트
 echo "Nginx 설정 파일 테스트 중..."
 if ! docker exec nginx nginx -t; then
-    echo "Nginx 설정 파일 테스트 실패. 변경 내용을 확인하세요."
+    echo "Nginx 설정 파일 테스트 실패. 변경 내용을 확인하세요. nginx.conf를 기존으로 돌립니다."
+    sed -i "s/my-project-${NEXT_ENV}:1323/my-project-${CURRENT_ENV}:1323/" ./nginx.conf
     exit 1
 fi
 
