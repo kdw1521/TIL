@@ -72,6 +72,7 @@ configmap 실행 & deployment 재실행
 ```bash
 > kubectl apply -f nest-config.yaml
 > kubectl apply -f nest-deployment.yaml
+> kubectl rollout restart deployment nest-deployment // 확실하게 deployment를 재실행 해준다.
 ```
 
 4. 로컬 브라우저에서 확인
