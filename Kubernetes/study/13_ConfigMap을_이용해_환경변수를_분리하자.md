@@ -75,4 +75,5 @@ configmap 실행 & deployment 재실행
 ```
 
 4. 로컬 브라우저에서 확인
-   service에 nodePort를 30000으로 해두었고 NestJS 에 기본 endpoint에 해당 환경변수를 출력하게 해두어 브라우저로 확인한다.
+
+service에 nodePort를 30000으로 해두었고 NestJS 에 기본 endpoint에 해당 환경변수를 출력하게 해두어 브라우저로 확인한다.
