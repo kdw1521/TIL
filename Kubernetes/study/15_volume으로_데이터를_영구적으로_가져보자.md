@@ -19,6 +19,8 @@ volume 의 종류
 - mysql-config.yaml (ConfigMap)
 - mysql-deployment.yaml (Deployment)
 - mysql-service.yaml (Service)
+- mysql-pv.yaml (PersistentVolume)
+- mysql-pvc.yaml (PersistentVolumeClaim)
 
 1. mysql-secret.yaml 작성
 
@@ -119,3 +121,103 @@ spec:
 ```
 
 이렇게 하면 test 스키마는 지워지게 된다.
+
+6. mysql-pv.yaml 과 mysql-pvc.yaml 을 이용해 영구적으로 보관하자.
+
+- mysql-pv.yaml 작성
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+  name: mysql-pv
+
+spec:
+  storageClassName: my-storage # pvc와 동일하게 작성해준다.
+  capacity:
+    storage: 1Gi
+  accessMode:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+```
+
+- mysql-pvc.yaml 작성
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: mysql-pvc
+
+spec:
+  storageClassName: my-storage # pv와 동일하게 작성해준다.
+  accessMode:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+7. mysql-deployment.yaml 수정
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: mysql-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-db
+
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+        - name: mysql-container
+          image: mysql
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: mysql-database
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+```
+
+7. 실행 및 확인
+
+```bash
+> kubectl apply -f mysql-pv.yaml
+> kubectl apply -f mysql-pvc.yaml
+> kubectl apply -f mysql-deployment.yaml
+```
+
+스키마를 생성한다.
+
+```bash
+> kubectl rollout restart deployment mysql-deployment // 테스트를 위해 재실행
+```
+
+재실행해도 스키마가 남아있다.
